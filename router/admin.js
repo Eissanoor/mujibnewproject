@@ -388,11 +388,23 @@ router.get("/get-mirsal", async (req, res) =>
     });
   }
 });
-router.get("/get-mirsal/:cardno", async (req, res) =>
+router.get("/get-mirsal/:identifier", async (req, res) =>
 {
   try {
-    const { cardno } = req.params;
-    const mirsalEntry = await mirsal.findOne({ cardno: cardno });
+    const { identifier } = req.params;
+    
+    // Check if identifier is a valid MongoDB ObjectId (24 character hex string)
+    const isObjectId = ObjectId.isValid(identifier) && identifier.length === 24;
+    
+    let mirsalEntry;
+    if (isObjectId) {
+      // Search by _id
+      mirsalEntry = await mirsal.findById(identifier);
+    } else {
+      // Search by cardno
+      mirsalEntry = await mirsal.findOne({ cardno: identifier });
+    }
+    
     if (mirsalEntry) {
       res.status(200).json({
         status: 200,
