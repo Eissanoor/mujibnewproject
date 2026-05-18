@@ -1,8 +1,9 @@
 var express = require("express");
 var cors = require("cors");
+var path = require("path");
 var app = express();
 var dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: path.join(__dirname, "config.env") });
 
 var allowedOrigins = [
   "https://varification.hutchisonportsuaqi.com",
