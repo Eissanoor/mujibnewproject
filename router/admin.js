@@ -16,12 +16,10 @@ const emailvarify = require("../model/emailotp");
 const mirsal = require("../model/mirsal")
 const { profile } = require("console");
 const cloudinary = require("cloudinary").v2;
-const cors = require("cors");
 const qr = require('qr-image');
 var dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 require("../database/db");
-router.use(cors());
 router.use(cookieparser());
 router.use(bodyparser.urlencoded({ extended: true }));
 router.use(express.urlencoded({ extended: false }));
@@ -190,7 +188,12 @@ router.post("/Login", async (req, res) =>
         { new: true }
       );
       const token = await useremail.generateAuthToken();
-      res.cookie("jwt", token, { httpOnly: true });
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: oneMonthInMillis,
+      });
       res.status(200).json({
         status: 200,
         message: "Login Successfully",
